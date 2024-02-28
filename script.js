@@ -1,4 +1,4 @@
- const canvas = document.getElementById('signatureCanvas');
+const canvas = document.getElementById('signatureCanvas');
     const ctx = canvas.getContext('2d');
     let isDrawing = false;
     let lastX = 0;
@@ -12,6 +12,7 @@
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = penColor;
         ctx.lineWidth = penWidth;
+        ctx.lineCap = 'round'; // Smooth line endings
         ctx.stroke();
     }
 
@@ -40,12 +41,14 @@
     });
 
     canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent scrolling
         const pos = getTouchPos(canvas, e);
         isDrawing = true;
         [lastX, lastY] = [pos.x, pos.y];
     });
 
     canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Prevent scrolling
         if (isDrawing) {
             const pos = getTouchPos(canvas, e);
             drawLine(lastX, lastY, pos.x, pos.y);
