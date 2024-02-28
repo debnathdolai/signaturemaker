@@ -1,4 +1,3 @@
-
     const canvas = document.getElementById('signatureCanvas');
     const ctx = canvas.getContext('2d');
     let isDrawing = false;
@@ -16,6 +15,14 @@
         ctx.stroke();
     }
 
+    function getTouchPos(canvasDom, touchEvent) {
+        const rect = canvasDom.getBoundingClientRect();
+        return {
+            x: touchEvent.touches[0].clientX - rect.left,
+            y: touchEvent.touches[0].clientY - rect.top
+        };
+    }
+
     canvas.addEventListener('mousedown', (e) => {
         isDrawing = true;
         [lastX, lastY] = [e.offsetX, e.offsetY];
@@ -29,6 +36,24 @@
     });
 
     canvas.addEventListener('mouseup', () => {
+        isDrawing = false;
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        const pos = getTouchPos(canvas, e);
+        isDrawing = true;
+        [lastX, lastY] = [pos.x, pos.y];
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        if (isDrawing) {
+            const pos = getTouchPos(canvas, e);
+            drawLine(lastX, lastY, pos.x, pos.y);
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+    });
+
+    canvas.addEventListener('touchend', () => {
         isDrawing = false;
     });
 
